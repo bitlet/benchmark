@@ -1,0 +1,78 @@
+name: benchmark
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 0 * * 0
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Setup Deno
+        uses: denolib/setup-deno@v2
+
+      - name: Deno version
+        run: deno --version
+
+      - name: Install Autocannon
+        run: |-
+          sudo npm i -g autocannon &&
+          autocannon --version
+
+      - name: Cleanup
+        run: echo "" > stats.md
+
+      - name: bitlet
+        run: |-
+          echo "## Bitlet" >> stats.md
+          echo -e "\`\`\`\n" >> stats.md
+
+          deno run -Ar bitlet/bitlet.ts &
+          sleep 15 &&
+          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          kill $!
+
+          echo -e "\`\`\`\n" >> stats.md
+
+      - name: oak
+        run: |-
+          echo "## Oak" >> stats.md
+          echo -e "\`\`\`\n" >> stats.md
+
+          deno run -Ar oak/oak.ts &
+          sleep 15 &&
+          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          kill $!
+
+          echo -e "\`\`\`\n" >> stats.md
+
+      - name: deno
+        run: |-
+          echo "## Deno" >> stats.md
+          echo -e "\`\`\`\n" >> stats.md
+
+          deno run -Ar deno/deno.ts &
+          sleep 15 &&
+          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          kill $!
+
+          echo -e "\`\`\`\n" >> stats.md
+
+      - name: Trim colors
+        run: |-
+          sed -i -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g" stats.md
+
+      - name: Commit and push changes
+        uses: actions-js/push@master
+        with:
+          github_token: "${{ secrets.PUSH_TOKEN }}"
+          coauthor_email: robinbertram@users.noreply.github.com
+          coauthor_name: Robin Bertram
+          message: "Autocommit"
+          branch: main
