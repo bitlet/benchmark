@@ -1,15 +1,11 @@
-import { Application, Router } from 'https://deno.land/x/oak/mod.ts';
-
-const router = new Router();
-
-router.get('/', (context) => {
-    context.response.body = 'Hello, World!';
-});
+import { Application } from "https://deno.land/x/oak/mod.ts";
 
 const app = new Application();
 
-app.use(router.routes());
+app.use((ctx) => {
+    ctx.response.body = "Hello, World!";
+});
 
 await app.listen({ port: 8000 });
 
-console.log('Oak server started');
+console.log("Oak server started");

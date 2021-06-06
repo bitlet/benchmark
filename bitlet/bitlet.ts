@@ -1,6 +1,7 @@
 import {
     Application,
     Controller,
+    Format,
     Get,
     Response,
     Route,
@@ -11,8 +12,9 @@ class DefaultController extends Controller {
     @Get("/")
     index() {
         return new Response({
-            message: "Hello, World!",
+            body: "Hello, World!",
             status: 200,
+            format: Format.Html,
         });
     }
 }

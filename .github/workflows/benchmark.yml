@@ -15,10 +15,18 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Deno
-        uses: denolib/setup-deno@v2
+        uses: denoland/setup-deno@v1
 
       - name: Deno version
         run: deno --version
+
+      - name: Setup Node
+        - uses: actions/setup-node@v2
+          with:
+            node-version: '16'
+
+      - name: Node version
+        run: node --version
 
       - name: Install Autocannon
         run: |-
@@ -33,7 +41,7 @@ jobs:
           echo "## Bitlet" >> stats.md
           echo -e "\`\`\`\n" >> stats.md
 
-          deno run -Ar bitlet/bitlet.ts &
+          deno run -Ar --unstable bitlet/bitlet.ts &
           sleep 15 &&
           autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
           kill $!
@@ -45,7 +53,19 @@ jobs:
           echo "## Oak" >> stats.md
           echo -e "\`\`\`\n" >> stats.md
 
-          deno run -Ar oak/oak.ts &
+          deno run -Ar --unstable oak/oak.ts &
+          sleep 15 &&
+          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          kill $!
+
+          echo -e "\`\`\`\n" >> stats.md
+
+      - name: alosaur
+        run: |-
+          echo "## Alosaur" >> stats.md
+          echo -e "\`\`\`\n" >> stats.md
+
+          deno run -Ar --unstable alosaur/alosaur.ts &
           sleep 15 &&
           autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
           kill $!
@@ -57,7 +77,19 @@ jobs:
           echo "## Deno" >> stats.md
           echo -e "\`\`\`\n" >> stats.md
 
-          deno run -Ar deno/deno.ts &
+          deno run -Ar --unstable deno/deno.ts &
+          sleep 15 &&
+          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          kill $!
+
+          echo -e "\`\`\`\n" >> stats.md
+
+      - name: node
+        run: |-
+          echo "## Node" >> stats.md
+          echo -e "\`\`\`\n" >> stats.md
+
+          node node/node.js &
           sleep 15 &&
           autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
           kill $!

@@ -1,9 +1,11 @@
-import { serve } from 'https://deno.land/std@0.84.0/http/server.ts';
+const response = new TextEncoder().encode("Hello, World!");
 
-const server = serve({ port: 8000 });
-
-for await (const request of server) {
-    request.respond({ body: 'Hello, World!' });
+for await (const conn of Deno.listen({ port: 8000 })) {
+    (async () => {
+        for await (const { respondWith } of Deno.serveHttp(conn)) {
+            respondWith(new Response(response));
+        }
+    })();
 }
 
-console.log('Deno server started');
+console.log("Deno server started");
