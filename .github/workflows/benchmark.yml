@@ -28,11 +28,6 @@ jobs:
       - name: Node version
         run: node --version
 
-      - name: Install Autocannon
-        run: |-
-          sudo npm i -g autocannon &&
-          autocannon --version
-
       - name: Cleanup
         run: echo "" > stats.md
 
@@ -43,7 +38,7 @@ jobs:
 
           deno run -Ar --unstable bitlet/bitlet.ts &
           sleep 15 &&
-          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          ./hey -c 40 -z 10s http://localhost:8000 &>> stats.md &&
           kill $!
 
           echo -e "\`\`\`\n" >> stats.md
@@ -55,7 +50,7 @@ jobs:
 
           deno run -Ar --unstable oak/oak.ts &
           sleep 15 &&
-          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          ./hey -c 40 -z 10s http://localhost:8000 &>> stats.md &&
           kill $!
 
           echo -e "\`\`\`\n" >> stats.md
@@ -67,7 +62,7 @@ jobs:
 
           deno run -Ar --unstable alosaur/alosaur.ts &
           sleep 15 &&
-          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          ./hey -c 40 -z 10s http://localhost:8000 &>> stats.md &&
           kill $!
 
           echo -e "\`\`\`\n" >> stats.md
@@ -79,7 +74,7 @@ jobs:
 
           deno run -Ar --unstable deno/deno.ts &
           sleep 15 &&
-          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          ./hey -c 40 -z 10s http://localhost:8000 &>> stats.md &&
           kill $!
 
           echo -e "\`\`\`\n" >> stats.md
@@ -91,7 +86,7 @@ jobs:
 
           node node/node.js &
           sleep 15 &&
-          autocannon -c 40 -d 10 http://localhost:8000 &>> stats.md &&
+          ./hey -c 40 -z 10s http://localhost:8000 &>> stats.md &&
           kill $!
 
           echo -e "\`\`\`\n" >> stats.md
