@@ -1,9 +1,4 @@
-import {
-    App,
-    Area,
-    Controller,
-    Get,
-} from "https://deno.land/x/alosaur@v0.31.0/mod.ts";
+import { App, Area, Controller, Get } from "https://deno.land/x/alosaur/mod.ts";
 
 @Controller()
 export class HomeController {

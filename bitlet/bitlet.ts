@@ -24,6 +24,6 @@ const app = await new Application()
     .controllers([DefaultController])
     .prepare();
 
-app.serve({ port: 8000 });
+app.listen({ port: 8000 });
 
 console.log("Bitlet server started");
